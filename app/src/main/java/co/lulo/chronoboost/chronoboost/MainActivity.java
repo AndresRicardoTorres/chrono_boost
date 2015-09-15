@@ -1,11 +1,17 @@
 package co.lulo.chronoboost.chronoboost;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    private String newTimerLabel = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +38,43 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.action_add) {
+
+            invokeAlertDialog();
+
+
+
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void invokeAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Title");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                newTimerLabel = input.getText().toString();
+
+                Toast myToast = Toast.makeText(MainActivity.this, "Added: " + newTimerLabel, Toast.LENGTH_SHORT);
+                myToast.show();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 }
