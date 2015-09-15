@@ -7,16 +7,19 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String newTimerLabel = "";
+    private Tracker mainTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainTracker = new Tracker();
     }
 
     @Override
@@ -39,11 +42,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_add) {
-
             invokeAlertDialog();
-
-
-
             return true;
         }
 
@@ -62,10 +61,14 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                newTimerLabel = input.getText().toString();
+                String newTimerLabel = input.getText().toString();
 
-                Toast myToast = Toast.makeText(MainActivity.this, "Added: " + newTimerLabel, Toast.LENGTH_SHORT);
-                myToast.show();
+                Toast.makeText(MainActivity.this, "Added: " + newTimerLabel, Toast.LENGTH_SHORT).show();
+
+                Timer newTimer = mainTracker.add(MainActivity.this, newTimerLabel);
+                LinearLayout timersLayout = (LinearLayout) findViewById(R.id.timers_layout);
+
+                timersLayout.addView(newTimer);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
