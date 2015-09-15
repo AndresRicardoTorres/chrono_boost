@@ -1,9 +1,6 @@
 package co.lulo.chronoboost.chronoboost;
 
-import android.content.Context;
-import android.widget.ToggleButton;
-
-public class Timer extends ToggleButton {
+public class Timer {
 
   private String label = "";
   /**
@@ -15,21 +12,60 @@ public class Timer extends ToggleButton {
    */
   private long startTime = 0;
 
-  public Timer(Context context, String label) {
-    super(context);
-    this.label = label;
-    setTextOff(label);
-    setChecked(false);
-  }
+  private long databaseId = 0;
+
+  /*
+   * is running ?
+   */
+  private boolean state = false;
 
   public void start() {
+    state = true;
     startTime = System.currentTimeMillis() / 1000L;
-    setTextOn(label + "\n Running");
   }
 
   public void stop() {
+    state = false;
     totalTime += ((System.currentTimeMillis() / 1000L) - startTime);
-    setChecked(false);
-    setTextOff(label + "\n Total time: " + totalTime);
+  }
+
+  public long getId() {
+    return databaseId;
+  }
+
+  public void setId(long databaseId) {
+    this.databaseId = databaseId;
+  }
+
+  public String getLabel() {
+    return label;
+  }
+
+  public void setLabel(String label) {
+    this.label = label;
+  }
+
+  public int getTotalTime() {
+    return totalTime;
+  }
+
+  public void setTotalTime(int totalTime) {
+    this.totalTime = totalTime;
+  }
+
+  public long getStartTime() {
+    return startTime;
+  }
+
+  public void setStartTime(long startTime) {
+    this.startTime = startTime;
+  }
+
+  public boolean getState() {
+    return state;
+  }
+
+  public void setState(boolean state) {
+    this.state = state;
   }
 }

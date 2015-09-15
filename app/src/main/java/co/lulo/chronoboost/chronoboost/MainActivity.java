@@ -12,72 +12,77 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Tracker mainTracker;
+  private Tracker mainTracker;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        mainTracker = new Tracker();
+    mainTracker = new Tracker(MainActivity.this);
+    for (TimerButton button: mainTracker.getTimerButtons()) {
+      addTimerButton(button);
+    }
+  }
+
+  private void addTimerButton(TimerButton newTimerButton)  {
+    LinearLayout timersLayout = (LinearLayout) findViewById(R.id.timers_layout);
+    timersLayout.addView(newTimerButton);
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getMenuInflater().inflate(R.menu.menu_main, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // Handle action bar item clicks here. The action bar will
+    // automatically handle clicks on the Home/Up button, so long
+    // as you specify a parent activity in AndroidManifest.xml.
+    int id = item.getItemId();
+
+    //noinspection SimplifiableIfStatement
+    if (id == R.id.action_settings) {
+      return true;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    if (id == R.id.action_add) {
+      invokeAlertDialog();
+      return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+      return super.onOptionsItemSelected(item);
+  }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+  private void invokeAlertDialog() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("Title");
 
-        if (id == R.id.action_add) {
-            invokeAlertDialog();
-            return true;
-        }
+    // Set up the input
+    final EditText input = new EditText(this);
+    builder.setView(input);
 
-        return super.onOptionsItemSelected(item);
-    }
+    // Set up the buttons
+    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
+        String newTimerLabel = input.getText().toString();
 
-    private void invokeAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Title");
+        Toast.makeText(MainActivity.this, "Added: " + newTimerLabel, Toast.LENGTH_SHORT).show();
+        TimerButton newTimerButton = mainTracker.add(newTimerLabel);
+        addTimerButton(newTimerButton);
+      }
+    });
+    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
+        dialog.cancel();
+      }
+    });
 
-        // Set up the input
-        final EditText input = new EditText(this);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String newTimerLabel = input.getText().toString();
-
-                Toast.makeText(MainActivity.this, "Added: " + newTimerLabel, Toast.LENGTH_SHORT).show();
-
-                Timer newTimer = mainTracker.add(MainActivity.this, newTimerLabel);
-                LinearLayout timersLayout = (LinearLayout) findViewById(R.id.timers_layout);
-
-                timersLayout.addView(newTimer);
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-    }
+    builder.show();
+  }
 }
